@@ -1,0 +1,86 @@
+
+/*
+Morgan Matchuny
+Postfix Evaluator
+*/
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include <stack>
+#include <string.h>
+
+using namespace std;
+
+//Checking for if the expression contains an operator
+bool isOperator(char ch) {
+    if (ch == '*' || ch == '/' || ch == '-' || ch == '+')
+        return true;
+    else
+        return false;
+}
+
+//evaluation of operation provided
+int performOperation(int firstOperand, int secondOperand, char operate) {
+    int result;
+    switch(operate){
+    case '*':
+        result = secondOperand * firstOperand;
+        break;
+    case '/':
+        result = secondOperand / firstOperand;
+        break;
+    case '+':
+        result = secondOperand + firstOperand;
+        break;
+    case '-':
+        result = secondOperand - firstOperand;
+        break;
+    }
+    return result;
+}
+
+int main() {
+	//character arrays for buffer and expression, ints for the operations
+	int i, j, len, x, firstOperand, secondOperand;
+    char postfixExp[100];
+	char buffer[15];
+	
+    //creating an integer stack
+    stack<int> s;
+    cout << "Enter a Postfix Expression (such as 3 4 *)" << endl;
+    gets(postfixExp);
+    //length is the length of the expression string inputted
+    len = strlen(postfixExp);
+    j = 0;
+    
+    //traversing the entire string
+    for(i = 0; i < len; i++){
+		//if expression is a operand, print to buffer/pop off stack
+        if(postfixExp[i] >= '0' && postfixExp[i] <= '9'){
+            buffer[j++] = postfixExp[i];
+        }
+        else if(postfixExp[i] == ' '){
+            if(j > 0){
+                buffer[j] = '\0';
+                x = atoi(buffer);
+                s.push(x);
+                j = 0;
+            }
+        }
+        //if we reach an operator, pop
+        else if(isOperator(postfixExp[i])){
+            firstOperand = s.top();
+            s.pop();
+            secondOperand = s.top();
+            s.pop();
+            //push result onto stack
+            s.push(performOperation(firstOperand, secondOperand, postfixExp[i]));
+        }
+    }
+    
+	//Printing out what is at the top of stack aka the final result
+    cout << "Your expression once evaluated is " << s.top() << endl;
+
+    return 0;
+}
